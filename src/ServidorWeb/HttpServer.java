@@ -9,21 +9,29 @@ import java.util.function.BiFunction;
 
 public class HttpServer {
 
-    // Map para rutas GET
     private static Map<String, BiFunction<Request, Response, String>> getRoutes = new HashMap<>();
 
-    // Método estático para registrar rutas GET
     public static void get(String path, BiFunction<Request, Response, String> handler) {
         getRoutes.put(path, handler);
     }
 
+    private static String staticDir = "resources"; 
+
+    public static void staticfiles(String folder) {
+        staticDir = (folder != null && !folder.isEmpty()) ? folder : "resources";
+    }
+
     public static void main(String[] args) throws IOException {
-        int port = 35008;
+        int port = 35009;
+
+
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             System.out.println("Servidor corriendo en http://localhost:" + port);
 
-            // Registrar rutas
-            get("/hello", (req, res) -> "hello world!");
+
+            get("/hello", (req, res) ->
+                "hello " + Optional.ofNullable(req.getValue("name")).orElse("world") + "!"
+            );
             get("/bye", (req, res) -> "goodbye!");
 
             while (true) {
@@ -34,7 +42,7 @@ public class HttpServer {
     }
 
     private static void handleClient(Socket clientSocket) {
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), StandardCharsets.UTF_8));
              OutputStream out = clientSocket.getOutputStream()) {
 
             String requestLine = in.readLine();
@@ -42,13 +50,16 @@ public class HttpServer {
 
             String[] tokens = requestLine.split(" ");
             String method = tokens[0];
-            String path = tokens[1];
+            String rawPath = tokens[1];
 
-            Request req = new Request(method, path);
+        
+            String basePath = rawPath.split("\\?", 2)[0];
+
+            Request req = new Request(method, rawPath);
             Response res = new Response();
 
             if ("GET".equalsIgnoreCase(method)) {
-                BiFunction<Request, Response, String> handler = getRoutes.get(path);
+                BiFunction<Request, Response, String> handler = getRoutes.get(basePath);
                 if (handler != null) {
                     String result = handler.apply(req, res);
                     res.setBody(result);
@@ -57,8 +68,8 @@ public class HttpServer {
                 }
             }
 
-            // Si no hay ruta registrada, intentar servir archivo estático
-            serveStaticFile(path, out);
+        
+            serveStaticFile(basePath, out);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -66,18 +77,21 @@ public class HttpServer {
     }
 
     private static void sendResponse(OutputStream out, Response res) throws IOException {
+        byte[] bodyBytes = res.getBody().getBytes(StandardCharsets.UTF_8);
         String httpResponse = "HTTP/1.1 " + res.getStatus() + " OK\r\n" +
-                              "Content-Type: text/plain\r\n" +
-                              "Content-Length: " + res.getBody().getBytes().length + "\r\n" +
-                              "\r\n" +
-                              res.getBody();
+                              "Content-Type: text/plain; charset=UTF-8\r\n" +
+                              "Content-Length: " + bodyBytes.length + "\r\n" +
+                              "\r\n";
         out.write(httpResponse.getBytes(StandardCharsets.UTF_8));
+        out.write(bodyBytes);
         out.flush();
     }
 
     private static void serveStaticFile(String path, OutputStream out) throws IOException {
-        // Carpeta de recursos
-        File file = new File("resources" + path);
+        
+        String safePath = path.startsWith("/") ? path.substring(1) : path;
+        File file = new File(staticDir, safePath);
+
         if (!file.exists() || file.isDirectory()) {
             Response res = new Response();
             res.setStatus(404);
@@ -88,36 +102,12 @@ public class HttpServer {
 
         byte[] content = Files.readAllBytes(file.toPath());
         String header = "HTTP/1.1 200 OK\r\n" +
-                        "Content-Type: text/html\r\n" +
+                        "Content-Type: text/html; charset=UTF-8\r\n" + // simple; puedes mejorar si quieres detectar por extensión
                         "Content-Length: " + content.length + "\r\n" +
                         "\r\n";
         out.write(header.getBytes(StandardCharsets.UTF_8));
         out.write(content);
         out.flush();
     }
-
-    // Clases internas para Request y Response
-    public static class Request {
-        private String method;
-        private String path;
-
-        public Request(String method, String path) {
-            this.method = method;
-            this.path = path;
-        }
-
-        public String getMethod() { return method; }
-        public String getPath() { return path; }
-    }
-
-    public static class Response {
-        private int status = 200;
-        private String body = "";
-
-        public int getStatus() { return status; }
-        public void setStatus(int status) { this.status = status; }
-
-        public String getBody() { return body; }
-        public void setBody(String body) { this.body = body; }
-    }
 }
+
