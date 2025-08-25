@@ -1,5 +1,5 @@
 <h1 align="center"> ​Servidor Web en Java💻​ </h1>
-<p align="center">Proyecto que sirve archivos estáticos de tipo HTML, archivos java script, css e imagenes desde una carpeta "resources", incluye una interfaz web interactuar con archivos mediante un buscador y pruebas de servicios REST.</p>
+<p align="center">Mini-framework que sirve archivos estáticos (HTML, JavaScript, CSS, imágenes) desde la carpeta <code>resources/</code> y permite definir servicios REST con funciones lambda.</p>
 
 ## 📌 Parte 1
 ⚙️ ¿Cómo funciona?
@@ -19,6 +19,7 @@
 
 ### Carpeta resources/
 - Contiene todos los archivos que el servidor puede servir (**Html, css, js, imágenes**)
+
 
 ## 📌 Parte 2 Microframeworks
 
