@@ -5,14 +5,13 @@
 ⚙️ ¿Cómo funciona?
 
 ### Servidor Web (HttpServer.java)
-- Crea un `ServerSocket` escuchando en el puerto **35008**
-- Recibe solicitudes HTTP y sirve archivos desde la carpeta **resources**
-- Maneja contenido **Html, css, js e imágenes**
-- Devuelve un mensaje **404** si el archivo no existe
+- Crea un ServerSocket en el puerto 8080.
+- Sirve archivos estáticos desde resources/.
+- Maneja HTML, CSS, JS e imágenes.
+- Devuelve 404 Not Found si el recurso no existe.
 
 ### index.html
-- Interfaz web para seleccionar tipo de archivo y ver los resultados
-- Incluye botones para **buscar archivos** y probar **endpoints REST**
+- Interfaz para interactuar con el servidor: buscar archivos y probar endpoints REST.
 
 ### style.css y script.js
 - Proporcionan los estilos de la interfaz web
@@ -20,12 +19,6 @@
 
 ### Carpeta resources/
 - Contiene todos los archivos que el servidor puede servir (**Html, css, js, imágenes**)
-
-### Imagen de la interfaz 
-
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/dc63d535-8489-435d-a46d-7c0af431cef3" width="1022" height="578" />
-</p>
 
 ## 📌 Parte 2 Microframeworks
 
