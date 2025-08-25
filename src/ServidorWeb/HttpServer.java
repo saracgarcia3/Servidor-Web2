@@ -22,17 +22,22 @@ public class HttpServer {
     }
 
     public static void main(String[] args) throws IOException {
-        int port = 35009;
+        int port = 8080; 
 
+        
+        staticfiles("resources");
 
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             System.out.println("Servidor corriendo en http://localhost:" + port);
 
+            
+            get("/App/hello", (req, res) -> {
+                List<String> names = req.getValues("name");
+                if (names.isEmpty()) return "Hello world";
+                return "Hello " + String.join(", ", names);
+            });
 
-            get("/hello", (req, res) ->
-                "hello " + Optional.ofNullable(req.getValue("name")).orElse("world") + "!"
-            );
-            get("/bye", (req, res) -> "goodbye!");
+            get("/App/pi", (req, res) -> String.valueOf(Math.PI));
 
             while (true) {
                 Socket clientSocket = serverSocket.accept();

@@ -72,3 +72,42 @@
 <p align="center">
 <img width="469" height="146" alt="image" src="https://github.com/user-attachments/assets/4f42826d-fe65-4a84-8550-4b7f3b3ffd41" />
 </p>
+
+4. En este punto se implementó un ejemplo completo de uso del mini-framework: en main se configura la carpeta de archivos estáticos con **staticfiles("resources")**, se inician los servicios GET con prefijo /App y se registran dos rutas de demostración que lee los parámetros de consulta, además, el servidor entrega directamente archivos estáticos ubicados en resources/:
+
+<p align="center">
+<img width="638" height="492" alt="image" src="https://github.com/user-attachments/assets/406bbc70-3e3f-44f1-95df-e57a6bb5843d" />
+</p>
+
+- Empezamos con: **http://localhost:8080/App/pi**
+
+<p align="center">
+<img width="426" height="139" alt="image" src="https://github.com/user-attachments/assets/fad864e9-85af-4d96-8c21-5e1ab3025247" />
+</p>
+
+- **http://localhost:8080/App/hello?name=sara**
+
+<p align="center">
+<img width="411" height="117" alt="image" src="https://github.com/user-attachments/assets/709c2a87-9649-43b1-92f4-dd3111990a57" />
+</p>
+
+- **http://localhost:8080/App/hello?name=sara&name=castillo**
+
+<p align="center">
+<img width="558" height="110" alt="image" src="https://github.com/user-attachments/assets/6128b33b-f472-4ced-90ec-cc1bdf32c8ab" />
+</p>
+
+Archivos estáticos desde /resources:
+
+- **http://localhost:8080/prueba.html**:
+
+<p align="center">
+<img width="397" height="137" alt="image" src="https://github.com/user-attachments/assets/068bc6cd-dbc9-4d66-b624-386c0ae3a77a" />
+</p>
+
+- **http://localhost:8080/index.html**
+
+<p align="center">
+<img width="1345" height="602" alt="image" src="https://github.com/user-attachments/assets/5d93ae5a-721c-4b62-8374-d9e858b0da35" />
+</p>
+  
