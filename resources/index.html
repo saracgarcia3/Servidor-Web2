@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Buscador de Archivos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #74ebd5, #9face6);
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      text-align: center;
+      width: 350px;
+    }
+
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    select {
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      width: 100%;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+
+    button {
+      background: #2c3e50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      margin: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #1a252f;
+      transform: scale(1.05);
+    }
+
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      background: #f9f9f9;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Buscador de Archivos</h1>
+    
+    <label for="tipo">Selecciona el tipo de archivo:</label>
+    <select id="tipo">
+      <option value="html">HTML</option>
+      <option value="css">CSS</option>
+      <option value="js">JavaScript</option>
+      <option value="png">Imagen PNG</option>
+      <option value="jpg">Imagen JPG</option>
+      <option value="txt">Texto</option>
+    </select>
+    
+    <div>
+      <button onclick="buscar()">Buscar archivos</button>
+      <button onclick="probarRest()">Probar REST</button>
+    </div>
+    
+    <div id="result">Resultados aquí...</div>
+  </div>
+
+  <script>
+    async function buscar() {
+      const tipo = document.getElementById("tipo").value;
+      try {
+        const response = await fetch(`/rest/files?type=${tipo}`);
+        const data = await response.json();
+        document.getElementById("result").innerHTML = 
+          "<b>Archivos encontrados:</b><br>" + data.join("<br>");
+      } catch (e) {
+        document.getElementById("result").innerText = "Error al buscar archivos";
+      }
+    }
+    
+    async function probarRest() {
+      try {
+        const response = await fetch("/rest/hello");
+        const data = await response.text();
+        document.getElementById("result").innerText = data;
+      } catch (e) {
+        document.getElementById("result").innerText = "Error al conectar con REST";
+      }
+    }
+  </script>
+</body>
+</html>
+
